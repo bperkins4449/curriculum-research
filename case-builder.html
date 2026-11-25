@@ -459,7 +459,7 @@ function olabF(c,f){ const v=c[f]; const empty=Array.isArray(v)?!v.some(x=>Strin
 function schoolDays(n){ const out=[]; const d=new Date(); d.setHours(0,0,0,0); const w=d.getDay(); d.setDate(d.getDate()+((8-w)%7||7)); while(out.length<n){ const x=d.getDay(); if(x>0&&x<6) out.push(new Date(d)); d.setDate(d.getDate()+1);} return out; }
 const iso = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const short = d => d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-function byKindApproved(){ const o={fhr:[],ekg:[],derm:[]}; approved().forEach(c=>o[c.kind]&&o[c.kind].push(c)); return o; }
+function byKindApproved(){ const o={fhr:[],ekg:[],derm:[]}; approved().forEach(c=>{ if(o[c.kind]&&!checkCase(c)) o[c.kind].push(c); }); return o; }
 function decoSvg(kind){
   if(kind==='ekg'){ let d='M0 60'; for(let x=0;x<600;x+=100){ d+=` L${x+30} 60 L${x+36} 54 L${x+42} 60 L${x+50} 60 L${x+54} 66 L${x+58} 18 L${x+62} 74 L${x+66} 60 L${x+78} 60 Q${x+86} 48 ${x+94} 60 L${x+100} 60`; }
     return `<svg class="deco" viewBox="0 0 600 120" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="none" stroke="var(--ekg)" stroke-width="2"/></svg>`; }
@@ -614,7 +614,7 @@ function bindEditor(c){
   document.querySelectorAll('input[name=corr]').forEach(r=>r.addEventListener('change',()=>{ c.correctIndex=+r.value; if(c.aiWrongPick===c.correctIndex) c.aiWrongPick=null; renderEditorSoon(); document.querySelectorAll('.ch').forEach(l=>l.classList.toggle('ans', l.querySelector('input[type=radio]').checked)); touch('choices'); }));
   document.querySelectorAll('[data-mine]').forEach(cb=>cb.addEventListener('change',()=>{ c.mine=c.mine||{}; c.mine[cb.dataset.mine]=cb.checked; refreshOrigins(c); saveCase(c); }));
   $('#addCh').addEventListener('click',()=>{ c.choices.push(''); c.whyNot.push(''); touch('choices'); renderEditor(); });
-  $('#rmCh').addEventListener('click',()=>{ c.choices.pop(); c.whyNot.pop(); if(c.correctIndex>=c.choices.length) c.correctIndex=0; if(c.aiWrongPick!=null&&c.aiWrongPick>=c.choices.length) c.aiWrongPick=null; touch('choices'); renderEditor(); });
+  $('#rmCh').addEventListener('click',()=>{ c.choices.pop(); c.whyNot.pop(); if(c.correctIndex>=c.choices.length) c.correctIndex=0; if(c.aiWrongPick!=null&&(c.aiWrongPick>=c.choices.length||c.aiWrongPick===c.correctIndex)) c.aiWrongPick=null; touch('choices'); renderEditor(); });
   $('#approve').addEventListener('click',()=>{ const err=checkCase(c); if(err){ $('.status-line').textContent=err; return; } tStop(); c.status = anyEdited(c)||!Object.keys(c.claude||{}).length ? 'fixed':'keep'; c.cutWhy=null; c.reviewed=Date.now(); saveCase(c,true); nextOpen(); });
   $('#cut').addEventListener('click',()=>{ $('#cutwhy').classList.add('on'); $('#cutwhy button').focus(); });
   document.querySelectorAll('#cutwhy button').forEach(b=>b.addEventListener('click',()=>{ tStop(); c.status='cut'; c.cutWhy=b.dataset.c; c.reviewed=Date.now(); addCutRule(b.dataset.c); saveCase(c,true); nextOpen(); }));
@@ -644,7 +644,7 @@ function appendTake(text){ const c=cases[dictCase]; if(!c||!text) return; c.take
 
 /* ---------- drafting ---------- */
 function activeRules(){ return rules.filter(r=>r.on).map(r=>'- '+r.text).join('\n'); }
-function templateDraft(c){ const words=c.take.trim(); const first=(words.match(/[^.!?]+[.!?]?/g)||[''] ).slice(0,2).join(' ').trim();
+function templateDraft(c){ const words=c.take.trim(); const first=(words.match(/[^.!?]+[.!?]?/g)||[''] ).slice(0,2).map(s=>s.trim()).join(' ').trim();
   return {title:'', read:first, prompt:'', question:KQ[c.kind], choices:['','','',''], correctIndex:0, whyNot:['','','',''], teach:words, aiRight:'', aiWrong:'', aiWrongPick:null,
     doubts:['Your read and teaching point start from your take. Write the vignette, the choices with why each wrong one is wrong, and both AI reads before approving.']}; }
 function applyDraft(c,d,drafter){
@@ -762,7 +762,7 @@ $('#rsFile').addEventListener('change',async e=>{ const f=e.target.files[0]; e.t
     cleanRules(d.rules).forEach(r=>{ if(!rules.some(x=>x.text===r.text)) rules.push(r); });
     const ok=lsave(); $('#bkMsg').textContent=(ok?'':'This browser is not saving, so these are only open until you close the page. ')+'Loaded '+n+' case'+(n===1?'':'s')+'. Cases with the same id were replaced.'; renderAll(); renderExport();
   }catch(err){ $('#bkMsg').textContent='That file is not a case builder backup.'; } });
-$('#copy').addEventListener('click',async()=>{ try{ await navigator.clipboard.writeText($('#json').textContent); $('#copied').textContent='Copied'; }catch(e){ const r=document.createRange(); r.selectNodeContents($('#json')); const s=getSelection(); s.removeAllRanges(); s.addRange(r); $('#copied').textContent='Copy is blocked here, so the text is selected. Press Ctrl or Cmd + C.'; } });
+$('#copy').addEventListener('click',async()=>{ if($('#json').textContent.startsWith('//')){ $('#copied').textContent='Approve a case first. There is nothing to copy yet.'; return; } try{ await navigator.clipboard.writeText($('#json').textContent); $('#copied').textContent='Copied'; }catch(e){ const r=document.createRange(); r.selectNodeContents($('#json')); const s=getSelection(); s.removeAllRanges(); s.addRange(r); $('#copied').textContent='Copy is blocked here, so the text is selected. Press Ctrl or Cmd + C.'; } });
 
 /* ---------- theme (light by default) ---------- */
 const LTHEME='cae-theme';
@@ -784,8 +784,8 @@ document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',
   if(b.dataset.v==='preview'){ pvDay=0; renderPreview(); } if(b.dataset.v==='export') renderExport();
 }));
 
-function goLocal(msg){ if(mode==='local') return; mode='local'; lload(); setSave('local', msg); afterLoad(); }
-function afterLoad(){ try{ const s=localStorage.getItem(LSEL); if(s&&cases[s]) sel=s; }catch(e){} if(!sel){ const L=list(); sel=(L.find(c=>c.status==='review')||L[0]||{}).id||null; } tStart(); renderAll(); }
+function goLocal(msg){ if(mode==='local') return; mode='local'; lload(); if(lsave()) setSave('local', msg); afterLoad(); }
+function afterLoad(){ try{ const s=localStorage.getItem(LSEL); if(s&&Object.hasOwn(cases,s)) sel=s; }catch(e){} if(!sel){ const L=list(); sel=(L.find(c=>c.status==='review')||L[0]||{}).id||null; } tStart(); renderAll(); }
 
 (async function init(){
   await idbOpen();
