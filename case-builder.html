@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <title>Teaching Case Builder</title>
+<script>try{var t=localStorage.getItem('cae-theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light')}catch(e){document.documentElement.setAttribute('data-theme','light')}</script>
 <style>:root{box-sizing:border-box}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -125,7 +126,7 @@ header{padding-block:28px 18px;display:grid;gap:12px}
 :root[data-theme="dark"] .frame.derm{background:radial-gradient(circle at 50% 45%, #3a3d4a 0%, #262935 60%, #1c1e27 100%)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .frame.derm{background:radial-gradient(circle at 50% 45%, #3a3d4a 0%, #262935 60%, #1c1e27 100%)}}
 .frame.has-img{background:#000}
-.frame svg.deco{width:100%;height:100%;position:absolute;inset:0;opacity:.55}
+.frame svg.deco{width:100%;height:100%;position:absolute;inset:0;opacity:.18}
 .frame .cap{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:.82rem;color:var(--ink-2)}
 .frame .rm{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);color:#fff;border:0;border-radius:999px;padding:3px 10px;font-size:.75rem;cursor:pointer}
 .frame .lic{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font-size:.68rem;padding:3px 8px;line-height:1.3}
@@ -269,7 +270,7 @@ footer{margin-top:26px;font-size:.8rem;color:var(--muted);display:grid;gap:6px}
       <button role="tab" aria-selected="false" data-v="export">Export</button>
     </div></div>
   </div>
-  <p class="lede">Add the strip, EKG or photo, then write what you see in your own words. The builder lays your read out as a full Daily Images case: the vignette, the choices, why each wrong answer is wrong, the teaching point and the two AI reads. You fill it in, then keep it, fix it or cut it, and approved cases fill the residents' calendar three a day. On this site the builder does not draft with AI; the three examples show what a finished draft looks like.</p>
+  <p class="lede">Add the strip, EKG or photo, then write what you see in your own words. The builder turns your words into a case outline: your read and the teaching point start from what you wrote, and you write the vignette, the choices, why each wrong answer is wrong, and a right and a wrong AI read. Then you keep it, fix it or cut it, and approved cases fill the residents' calendar three a day. On this site the builder does not draft with AI; the three examples show what a finished case looks like.</p>
   <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
     <span class="pill acc">Cases and images stay in this browser</span>
     <span class="pill">No patient names, dates or MRNs</span>
@@ -300,16 +301,16 @@ footer{margin-top:26px;font-size:.8rem;color:var(--muted);display:grid;gap:6px}
     <div class="ed" id="ed"></div>
     <aside class="side">
       <div class="card"><h3>Cases by type</h3><div class="bars" id="kindBars"></div><p class="muted small">Solid: approved. Light: still in progress.</p></div>
-      <div class="card"><h3>How much of the draft you kept</h3><div class="bars accept" id="acceptBars"></div><p class="muted small" id="acceptNote">Shows once you approve a case.</p></div>
+      <div class="card" hidden><h3>How much of the draft you kept</h3><div class="bars accept" id="acceptBars"></div><p class="muted small" id="acceptNote">Shows once you approve a case.</p></div>
       <div class="card"><h3>Daily Images calendar</h3><p class="muted small" id="calRange"></p><div class="cal" id="cal"></div>
         <div class="small muted" style="display:flex;gap:10px;flex-wrap:wrap"><span><i class="kdot k-fhr"></i> FHR</span><span><i class="kdot k-ekg"></i> EKG</span><span><i class="kdot k-derm"></i> Derm</span></div></div>
-      <div class="card"><h3>House rules for the drafts</h3><p class="muted small">A checklist for writing cases. Your cut reasons add rules here, and you can write your own.</p><div class="rules" id="rules"></div>
+      <div class="card"><h3>House rules for writing cases</h3><p class="muted small">A checklist for writing cases. Your cut reasons add rules here, and you can write your own.</p><div class="rules" id="rules"></div>
         <form class="addrule" id="addrule"><input id="ruleIn" placeholder="e.g. Use NICHD terms on every strip" maxlength="200" aria-label="New rule"><button class="btn" style="padding:6px 12px">Add</button></form></div>
     </aside>
   </div>
   <div class="how">
-    <div class="card"><b>1 · You say the read</b><p>Talk the way you would at the board: what it is, what you want them to learn, the trap they fall into.</p></div>
-    <div class="card"><b>2 · Lay out the case</b><p>One button sets up the vignette, choices, why-not notes and teaching point from your take. Any field you mark as yours stays as you wrote it.</p></div>
+    <div class="card"><b>1 · You write the read</b><p>Write it the way you would say it at the board: what it is, what you want them to learn, the trap they fall into.</p></div>
+    <div class="card"><b>2 · Build the case</b><p>One button starts your read and teaching point from your take. You write the vignette, choices, why-not notes and both AI reads. Nothing you have written is replaced.</p></div>
     <div class="card"><b>3 · You approve</b><p>Nothing reaches residents without your yes. Approved cases are ready for the Daily Images game.</p></div>
   </div>
 </section>
@@ -355,8 +356,8 @@ const HINTS = {
 };
 const STATUS = {draft:'Your take only', review:'To review', keep:'Kept', fixed:'Fixed', cut:'Cut'};
 const CUTS = [
-  ['Wrong or debatable key','Flag in doubts whenever the key could be argued, and keep the key to what the faculty read says.'],
-  ['Vignette does not match the image','Check the vignette against every age, sex, site or gestational age in the faculty take before writing it.'],
+  ['Wrong or debatable key','Keep the key to what your read says, and rewrite or cut a case whose key could be argued.'],
+  ['Vignette does not match the image','Check the vignette against every age, sex, site or gestational age the image shows.'],
   ['Too easy','Make distractors close: same category and same patient group as the answer.'],
   ['Not useful for FM','Choose findings a family medicine resident will meet in clinic, on L&D or on the ward.'],
   ['Teaching point off','Keep the teaching point to the one thing to remember and the next step.'],
@@ -383,16 +384,46 @@ function blankCase(kind){ const now=Date.now(); return {id:uid(), kind, title:''
 
 /* ---------- local storage fallback ---------- */
 const SEED = {"seed-derm-tv":{"aiRight":"Hypopigmented macules with fine scale on the trunk: tinea versicolor. Confirm with KOH and treat topically.","aiWrong":"Well-defined white patches on the trunk with no redness: vitiligo. Refer to dermatology for phototherapy.","aiWrongPick":0,"choices":["Vitiligo","Tinea versicolor","Pityriasis rosea","Seborrheic dermatitis"],"claude":{"aiRight":"Hypopigmented macules with fine scale on the trunk: tinea versicolor. Confirm with KOH and treat topically.","aiWrong":"Well-defined white patches on the trunk with no redness: vitiligo. Refer to dermatology for phototherapy.","choices":["Vitiligo","Tinea versicolor","Pityriasis rosea","Seborrheic dermatitis"],"prompt":"A 24-year-old man noticed light patches on his upper back and chest after a summer of sun. They do not itch. Light scratching brings up a fine scale.","question":"What is the most likely diagnosis?","read":"Hypopigmented, finely scaling macules on the trunk: tinea (pityriasis) versicolor.","source":"Photo: Sarahrosenau on Flickr.com, CC BY-SA 2.0, Wikimedia Commons.","teach":"Fine scale on light patches of the trunk is tinea versicolor, caused by Malassezia. A KOH prep shows short hyphae and round yeast.\n\nTreat with topical selenium sulfide or ketoconazole. Oral terbinafine does not work for Malassezia. Tell him the color takes months to even out after the yeast is gone."},"correctIndex":1,"created":1795586836073,"cutWhy":null,"doubts":[],"drafter":"claude","example":true,"id":"seed-derm-tv","kind":"derm","mine":{},"ms":0,"prompt":"A 24-year-old man noticed light patches on his upper back and chest after a summer of sun. They do not itch. Light scratching brings up a fine scale.","question":"What is the most likely diagnosis?","read":"Hypopigmented, finely scaling macules on the trunk: tinea (pityriasis) versicolor.","reviewed":null,"source":"Photo: Sarahrosenau on Flickr.com, CC BY-SA 2.0, Wikimedia Commons.","status":"review","take":"Young guy, light patches on the chest and back he noticed after a tan, fine scale when you scratch it. Tinea versicolor. Teach the KOH and topical treatment. Trap: oral terbinafine does not work for this.","teach":"Fine scale on light patches of the trunk is tinea versicolor, caused by Malassezia. A KOH prep shows short hyphae and round yeast.\n\nTreat with topical selenium sulfide or ketoconazole. Oral terbinafine does not work for Malassezia. Tell him the color takes months to even out after the yeast is gone.","title":"Light patches after summer","updated":1795586836073,"whyNot":["Vitiligo is fully depigmented and has no scale.","","Pityriasis rosea starts with a herald patch and follows skin lines in a Christmas-tree pattern.","Seborrheic dermatitis is greasy, red and scaly on the scalp, face and chest, not light patches."]},"seed-ekg-inf":{"aiRight":"ST elevation in the inferior leads with reciprocal depression in aVL: inferior STEMI. Get V4R before giving nitrates.","aiWrong":"ST elevation in several leads with a concave shape: acute pericarditis. Treat with an NSAID and colchicine.","aiWrongPick":0,"choices":["Acute pericarditis","Inferior STEMI","Benign early repolarization","Left ventricular aneurysm"],"claude":{"aiRight":"ST elevation in the inferior leads with reciprocal depression in aVL: inferior STEMI. Get V4R before giving nitrates.","aiWrong":"ST elevation in several leads with a concave shape: acute pericarditis. Treat with an NSAID and colchicine.","choices":["Acute pericarditis","Inferior STEMI","Benign early repolarization","Left ventricular aneurysm"],"prompt":"A 58-year-old man has had crushing chest pain for one hour. BP 96/60, HR 54. The ECG shows ST elevation in II, III and aVF with ST depression in aVL.","question":"What is the most likely diagnosis?","read":"ST elevation in II, III and aVF with reciprocal ST depression in aVL: inferior STEMI.","source":"ACCF/AHA STEMI guideline (O'Gara 2013).","teach":"Reciprocal ST depression in aVL makes this an inferior STEMI, not pericarditis. Activate the cath lab.\n\nGet right-sided leads. ST elevation in V4R points to right ventricular involvement, which is preload dependent: avoid nitrates and give fluid for low pressure."},"correctIndex":1,"created":1795586836073,"cutWhy":null,"doubts":["No image yet. Add the tracing before approving."],"drafter":"claude","example":true,"id":"seed-ekg-inf","kind":"ekg","mine":{},"ms":0,"prompt":"A 58-year-old man has had crushing chest pain for one hour. BP 96/60, HR 54. The ECG shows ST elevation in II, III and aVF with ST depression in aVL.","question":"What is the most likely diagnosis?","read":"ST elevation in II, III and aVF with reciprocal ST depression in aVL: inferior STEMI.","reviewed":null,"source":"ACCF/AHA STEMI guideline (O'Gara 2013).","status":"review","take":"58 year old man, chest pain an hour, BP 96 over 60. ST up in II, III, aVF, reciprocal depression in aVL. Inferior STEMI. Teaching point is the right-sided leads and no nitro. Trap is calling it pericarditis.","teach":"Reciprocal ST depression in aVL makes this an inferior STEMI, not pericarditis. Activate the cath lab.\n\nGet right-sided leads. ST elevation in V4R points to right ventricular involvement, which is preload dependent: avoid nitrates and give fluid for low pressure.","title":"Inferior STEMI with soft pressure","updated":1795586836073,"whyNot":["Pericarditis gives diffuse ST elevation with PR depression and no reciprocal depression.","","Early repolarization has no reciprocal ST depression and fits a young, well patient.","An aneurysm shows persistent ST elevation with Q waves after an old infarct, not new pain."]},"seed-fhr-late":{"aiRight":"Minimal variability with recurrent late decelerations: Category II. Stop the oxytocin and start intrauterine resuscitation.","aiWrong":"Decelerations line up with contractions and recover quickly: early decelerations, Category I. Continue routine monitoring.","aiWrongPick":0,"choices":["Category I: early decelerations","Category I: variable decelerations","Category II: recurrent late decelerations with minimal variability","Category III: sinusoidal pattern"],"claude":{"aiRight":"Minimal variability with recurrent late decelerations: Category II. Stop the oxytocin and start intrauterine resuscitation.","aiWrong":"Decelerations line up with contractions and recover quickly: early decelerations, Category I. Continue routine monitoring.","choices":["Category I: early decelerations","Category I: variable decelerations","Category II: recurrent late decelerations with minimal variability","Category III: sinusoidal pattern"],"prompt":"A 27-year-old G2P1 at 39 weeks is on oxytocin for induction. For the last 30 minutes the strip shows a baseline near 150 bpm, minimal variability, and a gradual drop in heart rate after most contractions, with the lowest point after the contraction's peak.","question":"How do you classify this tracing?","read":"Baseline about 150 bpm, minimal variability, recurrent late decelerations: NICHD Category II.","source":"ACOG Practice Bulletin 106 (2009) and 116 (2010).","teach":"Recurrent late decelerations with minimal variability are Category II. Category III needs absent variability with recurrent lates, recurrent variables or bradycardia, or a sinusoidal pattern.\n\nStart intrauterine resuscitation: stop the oxytocin, turn her to her side, give an IV fluid bolus and treat low blood pressure. If the pattern does not improve, plan for delivery."},"correctIndex":2,"created":1795586836073,"cutWhy":null,"doubts":["No image yet. Add the strip before approving."],"drafter":"claude","example":true,"id":"seed-fhr-late","kind":"fhr","mine":{},"ms":0,"prompt":"A 27-year-old G2P1 at 39 weeks is on oxytocin for induction. For the last 30 minutes the strip shows a baseline near 150 bpm, minimal variability, and a gradual drop in heart rate after most contractions, with the lowest point after the contraction's peak.","question":"How do you classify this tracing?","read":"Baseline about 150 bpm, minimal variability, recurrent late decelerations: NICHD Category II.","reviewed":null,"source":"ACOG Practice Bulletin 106 (2009) and 116 (2010).","status":"review","take":"39 weeker on pit, baseline about 150, minimal variability, late decels with most contractions for the last 30 minutes. I want them to call it Category II and say the resuscitation steps. Trap: calling these early decels because they line up with contractions.","teach":"Recurrent late decelerations with minimal variability are Category II. Category III needs absent variability with recurrent lates, recurrent variables or bradycardia, or a sinusoidal pattern.\n\nStart intrauterine resuscitation: stop the oxytocin, turn her to her side, give an IV fluid bolus and treat low blood pressure. If the pattern does not improve, plan for delivery.","title":"Late decels on oxytocin","updated":1795586836073,"whyNot":["Early decelerations mirror the contraction, with the lowest point at its peak. These reach their lowest point after it.","Variable decelerations are abrupt, within 30 seconds of onset. These are gradual.","","A sinusoidal pattern is a smooth wave with no variability. This strip has decelerations, not a wave."]}};
-function lload(){ let s=null; try{ s=JSON.parse(localStorage.getItem(LKEY)||'null'); }catch(e){} if(s){ cases=s.cases||{}; rules=s.rules||[]; } else { cases=JSON.parse(JSON.stringify(SEED)); rules=[]; lsave(); } }
-function lsave(){ try{ localStorage.setItem(LKEY, JSON.stringify({cases,rules})); }catch(e){} }
+const ID_RE=/^[A-Za-z0-9-]{1,40}$/, IMG_RE=/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+\/=]+$/;
+function okId(id){ return typeof id==='string' && ID_RE.test(id) && !(id in {}); }
+function str(v,max){ return typeof v==='string' ? v.slice(0,max) : ''; }
+function cleanCase(id,c){
+  if(!okId(id)||!c||typeof c!=='object'||c.id!==id||!KINDS.includes(c.kind)) return null;
+  if(!Array.isArray(c.choices)||c.choices.length<2||c.choices.length>6) return null;
+  const o=blankCase(c.kind); o.id=id; o.title=str(c.title,80); o.take=str(c.take,4000);
+  ['read','prompt','question','teach','source','aiRight','aiWrong'].forEach(f=>{ o[f]=str(c[f],4000); });
+  if(!o.question) o.question=KQ[o.kind];
+  o.choices=c.choices.map(x=>str(x,300));
+  const wn=Array.isArray(c.whyNot)?c.whyNot:[]; o.whyNot=o.choices.map((_,i)=>str(wn[i],600));
+  const n=o.choices.length, inRange=v=>Number.isInteger(v)&&v>=0&&v<n;
+  o.correctIndex=inRange(c.correctIndex)?c.correctIndex:0;
+  o.aiWrongPick=inRange(c.aiWrongPick)&&c.aiWrongPick!==o.correctIndex?c.aiWrongPick:null;
+  o.status=Object.hasOwn(STATUS,c.status)?c.status:'draft';
+  o.cutWhy=CUTS.some(x=>x[0]===c.cutWhy)?c.cutWhy:null; if(o.status==='cut'&&!o.cutWhy) o.status='review';
+  o.drafter=['claude','template'].includes(c.drafter)?c.drafter:null;
+  const plain=v=>v&&typeof v==='object'&&!Array.isArray(v);
+  o.claude={}; if(plain(c.claude)) FIELDS.forEach(f=>{ if(!Object.hasOwn(c.claude,f)) return; const v=c.claude[f];
+    if(f==='choices'){ if(Array.isArray(v)) o.claude.choices=v.slice(0,6).map(x=>str(x,300)); } else if(typeof v==='string') o.claude[f]=v.slice(0,4000); });
+  o.mine={}; if(plain(c.mine)) FIELDS.forEach(f=>{ if(Object.hasOwn(c.mine,f)&&c.mine[f]) o.mine[f]=true; });
+  o.doubts=Array.isArray(c.doubts)?c.doubts.filter(x=>typeof x==='string').slice(0,8).map(x=>x.slice(0,400)):[];
+  ['created','updated','ms'].forEach(f=>{ if(Number.isFinite(c[f])&&c[f]>=0) o[f]=c[f]; });
+  if(Number.isFinite(c.reviewed)&&c.reviewed>=0) o.reviewed=c.reviewed;
+  o.example=c.example===true&&Object.hasOwn(SEED,id);
+  return o;
+}
+function cleanCases(src){ const out={}; if(src&&typeof src==='object') for(const [id,c] of Object.entries(src)){ const k=cleanCase(id,c); if(k) out[id]=k; } return out; }
+function cleanRules(src){ const out=[]; if(Array.isArray(src)) src.forEach(r=>{ if(r&&typeof r.text==='string'&&r.text.trim()&&!out.some(x=>x.text===r.text)) out.push({id:uid(),text:r.text.slice(0,200),src:r.src==='cut'?'cut':'you',on:r.on!==false}); }); return out; }
+function lload(){ let s=null; try{ s=JSON.parse(localStorage.getItem(LKEY)||'null'); }catch(e){} if(s&&typeof s==='object'){ cases=cleanCases(s.cases); rules=cleanRules(s.rules); } else { cases=cleanCases(JSON.parse(JSON.stringify(SEED))); rules=[]; lsave(); } }
+function lsave(){ try{ localStorage.setItem(LKEY, JSON.stringify({cases,rules})); if(mode==='local') setSave('local','Saved in this browser only'); return true; }catch(e){ setSave('err','This browser is not saving. Download a backup before you close the page.'); return false; } }
 
 /* ---------- images: IndexedDB, this browser only ---------- */
 let idb=null;
 function idbOpen(){ return new Promise(res=>{ try{ const r=indexedDB.open('teaching-case-builder',1); r.onupgradeneeded=()=>r.result.createObjectStore('img'); r.onsuccess=()=>{idb=r.result;res(idb)}; r.onerror=()=>res(null);}catch(e){res(null)} }); }
 const imgCache = {};
-async function imgGet(id){ if(id in imgCache) return imgCache[id]; if(EX_IMG[id]) return EX_IMG[id].src; if(!idb) return null;
+function exImg(id){ return Object.hasOwn(EX_IMG,id) ? EX_IMG[id] : null; }
+async function imgGet(id){ if(Object.hasOwn(imgCache,id)) return imgCache[id]; if(exImg(id)) return exImg(id).src; if(!idb) return null;
   return new Promise(res=>{ try{ const q=idb.transaction('img').objectStore('img').get(id); q.onsuccess=()=>{imgCache[id]=q.result||null;res(q.result||null)}; q.onerror=()=>res(null);}catch(e){res(null)} }); }
-async function imgPut(id,data){ imgCache[id]=data; if(!idb) return; try{ idb.transaction('img','readwrite').objectStore('img').put(data,id); }catch(e){} }
+async function imgPut(id,data){ imgCache[id]=data; if(!idb){ setSave('err','This browser cannot keep images. They are lost when you close the page.'); return; } try{ idb.transaction('img','readwrite').objectStore('img').put(data,id); }catch(e){} }
 async function imgDel(id){ imgCache[id]=null; if(!idb) return; try{ idb.transaction('img','readwrite').objectStore('img').delete(id); }catch(e){} }
 function shrink(file){ return new Promise((res,rej)=>{ const fr=new FileReader(); fr.onload=()=>{ const im=new Image(); im.onload=()=>{ const m=1600, s=Math.min(1,m/Math.max(im.width,im.height));
   const c=document.createElement('canvas'); c.width=Math.round(im.width*s); c.height=Math.round(im.height*s); c.getContext('2d').drawImage(im,0,0,c.width,c.height); res(c.toDataURL('image/jpeg',.86)); }; im.onerror=rej; im.src=fr.result; }; fr.onerror=rej; fr.readAsDataURL(file); }); }
@@ -424,6 +455,7 @@ function origin(c,f){ if(c.mine && c.mine[f]) return (c.claude && f in c.claude 
   if(c.claude && f in c.claude) return same(c.claude[f],c[f]) ? 'claude' : 'edited'; return 'none'; }
 const OL = {claude:'AI drafted', template:'From your take', edited:'Edited by you', you:'Written by you', none:'Empty'};
 function olab(c,o){ return o==='claude' && c.drafter==='template' ? OL.template : OL[o]; }
+function olabF(c,f){ const v=c[f]; const empty=Array.isArray(v)?!v.some(x=>String(x).trim()):!String(v||'').trim(); return empty&&!(c.mine&&c.mine[f]) ? 'none' : origin(c,f); }
 function schoolDays(n){ const out=[]; const d=new Date(); d.setHours(0,0,0,0); const w=d.getDay(); d.setDate(d.getDate()+((8-w)%7||7)); while(out.length<n){ const x=d.getDay(); if(x>0&&x<6) out.push(new Date(d)); d.setDate(d.getDate()+1);} return out; }
 const iso = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const short = d => d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
@@ -436,8 +468,8 @@ function decoSvg(kind){
   return `<svg class="deco" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="58" fill="none" stroke="var(--derm)" stroke-width="1.5" stroke-dasharray="4 6"/><circle cx="100" cy="100" r="5" fill="var(--derm)"/></svg>`;
 }
 function frameHtml(c, src, editable){
-  const ex=EX_IMG[c.id];
-  if(src) return `<div class="frame has-img ${c.kind}" ${editable?'id="frame"':''}><img src="${src}" alt="${esc(KL[c.kind])} for ${esc(c.title||'this case')}">${editable&&!ex?'<button class="rm" id="rmImg">Remove</button>':''}${ex?`<div class="lic">${esc(ex.credit)}</div>`:''}</div>`;
+  const ex=exImg(c.id);
+  if(src) return `<div class="frame has-img ${c.kind}" ${editable?'id="frame"':''}><img src="${esc(src)}" alt="${esc(KL[c.kind])} for ${esc(c.title||'this case')}">${editable&&!ex?'<button class="rm" id="rmImg">Remove</button>':''}${ex?`<div class="lic">${esc(ex.credit)}</div>`:''}</div>`;
   return `<div class="frame ${c.kind}" ${editable?'id="frame" tabindex="0" role="button" aria-label="Add an image"':''}>${decoSvg(c.kind)}<span class="cap">${editable?(c.kind==='derm'?'Image needed. Tap to add the photo':'Image needed. Tap to add a real tracing'):'Image needed'}</span></div>`;
 }
 
@@ -457,8 +489,8 @@ function pass(c){ if(filter==='all') return true; if(KINDS.includes(filter)) ret
 async function renderList(){
   const L=list().filter(pass);
   if(!L.length){ $('#list').innerHTML=`<div class="empty-msg">${Object.keys(cases).length?'Nothing here with this filter.':'No cases yet. Start one above.'}</div>`; return; }
-  $('#list').innerHTML=L.map(c=>`<button class="li k-${c.kind}" data-id="${c.id}" aria-current="${c.id===sel}"><span class="th" data-th="${c.id}"><i>${c.kind.toUpperCase()}</i></span><span style="min-width:0"><span class="s ${c.status}">${STATUS[c.status]}${c.example?' · example':''}</span><span class="t" style="display:block">${esc(c.title||'Untitled '+KL[c.kind])}</span></span></button>`).join('');
-  for(const c of L){ const src=await imgGet(c.id); if(src){ const el=document.querySelector(`[data-th="${c.id}"]`); if(el) el.innerHTML=`<img src="${src}" alt="">`; } }
+  $('#list').innerHTML=L.map(c=>`<button class="li k-${c.kind}" data-id="${esc(c.id)}" aria-current="${c.id===sel}"><span class="th" data-th="${esc(c.id)}"><i>${c.kind.toUpperCase()}</i></span><span style="min-width:0"><span class="s ${esc(c.status)}">${esc(STATUS[c.status]||"")}${c.example?' · example':''}</span><span class="t" style="display:block">${esc(c.title||'Untitled '+KL[c.kind])}</span></span></button>`).join('');
+  for(const c of L){ const src=await imgGet(c.id); if(src){ const el=[...document.querySelectorAll('[data-th]')].find(x=>x.dataset.th===c.id); if(el) el.innerHTML=`<img src="${esc(src)}" alt="">`; } }
 }
 function renderKindBars(){
   const all=Object.values(cases); const max=Math.max(1,...KINDS.map(k=>all.filter(c=>c.kind===k&&c.status!=='cut').length));
@@ -480,7 +512,7 @@ function renderCal(){
 }
 function renderRules(){
   if(!rules.length){ $('#rules').innerHTML='<span class="muted">No rules yet.</span>'; return; }
-  $('#rules').innerHTML=rules.map(r=>`<label class="rule"><input type="checkbox" data-r="${r.id}" ${r.on?'checked':''}><span><span class="src">${r.src==='cut'?'From a cut':'Yours'}</span><br>${esc(r.text)}</span><button type="button" data-rdel="${r.id}" aria-label="Remove rule">✕</button></label>`).join('');
+  $('#rules').innerHTML=rules.map(r=>`<label class="rule"><input type="checkbox" data-r="${esc(r.id)}" ${r.on?'checked':''}><span><span class="src">${r.src==='cut'?'From a cut':'Yours'}</span><br>${esc(r.text)}</span><button type="button" data-rdel="${esc(r.id)}" aria-label="Remove rule">✕</button></label>`).join('');
 }
 function renderSide(){ renderMeter(); renderKindBars(); renderAccept(); renderCal(); renderRules(); }
 
@@ -491,7 +523,7 @@ async function renderEditor(){
   const drafted = Object.keys(c.claude||{}).length>0 || c.status!=='draft';
   const busy = draftingId===c.id;
   const decided=['keep','fixed','cut'].includes(c.status);
-  const fh=(f,extra='')=>{ const o=origin(c,f); return `<div class="fld-head"><b>${FL[f]}</b><span class="org ${o}" data-org="${f}">${olab(c,o)}</span>${extra}<label class="lock"><input type="checkbox" data-mine="${f}" ${c.mine&&c.mine[f]?'checked':''}> Mine, keep it</label></div>`; };
+  const fh=(f,extra='')=>{ const o=olabF(c,f); return `<div class="fld-head"><b>${FL[f]}</b><span class="org ${o}" data-org="${f}">${olab(c,o)}</span>${extra}<label class="lock"><input type="checkbox" data-mine="${f}" ${c.mine&&c.mine[f]?'checked':''}> Mine, keep it</label></div>`; };
   $('#ed').innerHTML=`
   <section class="card step k-${c.kind}">
     <div class="step-top"><div class="lead"><span class="num">1</span><h2>Your take</h2></div>
@@ -500,11 +532,11 @@ async function renderEditor(){
       <div style="display:grid;gap:6px">${frameHtml(c,src,true)}<input type="file" id="file" accept="image/jpeg,image/png,image/webp" hidden><span class="muted small">Openly licensed or de-identified images only. They stay in this browser.</span></div>
       <div class="takebox">
         <div class="mic" id="microw"><button class="micbtn" id="mic" aria-label="Dictate" title="Dictate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button><span class="small" id="micState">Tap to talk, or type below.</span></div>
-        <textarea id="take" maxlength="4000" placeholder="Say whatever you want about this case: what it shows, what you want residents to learn, the trap they fall into, the next step.">${esc(c.take)}</textarea>
+        <textarea id="take" maxlength="4000" placeholder="Write whatever you want about this case: what it shows, what you want residents to learn, the trap they fall into, the next step.">${esc(c.take)}</textarea>
         <div class="partial" id="partial" aria-live="polite"></div>
         <div class="hints">${HINTS[c.kind].map(h=>`<span>${esc(h)}</span>`).join('')}</div>
         <div class="drafting">
-          <button class="btn primary" id="draft" ${busy?'disabled':''}>${drafted?'Lay it out again':'Lay out the case'}</button>
+          <button class="btn primary" id="draft" ${busy?'disabled':''}>${drafted?'Fill empty fields from my take':'Start the case from my take'}</button>
           <button class="btn" id="byhand" ${busy?'disabled':''}>${drafted?'':'Write it all by hand'}</button>
           <span class="small muted" id="dstat"></span>
         </div>
@@ -539,11 +571,11 @@ async function renderEditor(){
       <button class="btn cut" id="cut">Cut</button>
       ${decided?'<button class="btn ghost" id="reopen">Reopen</button>':''}
       <button class="btn ghost" id="del">Delete</button>
-      <span class="status-line">${decided?statusText(c):'Not decided yet'}</span>
+      <span class="status-line">${decided?esc(statusText(c)):'Not decided yet'}</span>
     </div>
     <div class="cutwhy" id="cutwhy"><span class="muted small">Why cut it?</span>${CUTS.map(([l])=>`<button data-c="${esc(l)}">${esc(l)}</button>`).join('')}</div>
   </section>`:`
-  <section class="card step k-${c.kind}" style="opacity:.75"><div class="step-top"><div class="lead"><span class="num">2</span><h2>The case</h2></div></div><p class="muted">Lay out the case to set up the vignette, choices, why-not notes and teaching point from your take, then fill them in. Or write it all by hand.</p></section>`}`;
+  <section class="card step k-${c.kind}" style="opacity:.75"><div class="step-top"><div class="lead"><span class="num">2</span><h2>The case</h2></div></div><p class="muted">Start the case to begin your read and teaching point from your take, then write the vignette, choices, why-not notes and both AI reads. Or write it all by hand.</p></section>`}`;
   bindEditor(c);
 }
 function anyEdited(c){ return FIELDS.some(f=>origin(c,f)==='edited'); }
@@ -558,7 +590,7 @@ function readiness(c,src){ return [
 let edT=null; function renderEditorSoon(){ clearTimeout(edT); edT=setTimeout(renderEditor,50); }
 function statusText(c){ return c.status==='cut' ? `Cut: ${c.cutWhy}` : c.status==='fixed' ? 'Approved with your edits' : 'Approved as drafted'; }
 
-function refreshOrigins(c){ document.querySelectorAll('[data-org]').forEach(el=>{ const o=origin(c,el.dataset.org); el.className='org '+o; el.textContent=olab(c,o); }); const a=$('#approve'); if(a) a.textContent=approveLabel(c); }
+function refreshOrigins(c){ document.querySelectorAll('[data-org]').forEach(el=>{ const o=olabF(c,el.dataset.org); el.className='org '+o; el.textContent=olab(c,o); }); const a=$('#approve'); if(a) a.textContent=approveLabel(c); }
 
 function bindEditor(c){
   const touch=(f)=>{ c.mine=c.mine||{}; if(!c.mine[f]){ c.mine[f]=true; const cb=document.querySelector(`[data-mine="${f}"]`); if(cb) cb.checked=true; } if(['keep','fixed'].includes(c.status)) {} refreshOrigins(c); saveCase(c); renderSideSoon(); };
@@ -614,7 +646,7 @@ function appendTake(text){ const c=cases[dictCase]; if(!c||!text) return; c.take
 function activeRules(){ return rules.filter(r=>r.on).map(r=>'- '+r.text).join('\n'); }
 function templateDraft(c){ const words=c.take.trim(); const first=(words.match(/[^.!?]+[.!?]?/g)||[''] ).slice(0,2).join(' ').trim();
   return {title:'', read:first, prompt:'', question:KQ[c.kind], choices:['','','',''], correctIndex:0, whyNot:['','','',''], teach:words, aiRight:'', aiWrong:'', aiWrongPick:null,
-    doubts:['This is a template from your words. Write the vignette, the choices with why each wrong one is wrong, and both AI reads before approving.']}; }
+    doubts:['Your read and teaching point start from your take. Write the vignette, the choices with why each wrong one is wrong, and both AI reads before approving.']}; }
 function applyDraft(c,d,drafter){
   const mine=c.mine||{}; const n=Math.max(2,Math.min(6,(Array.isArray(d.choices)?d.choices.length:4)));
   const out={ read:String(d.read||''), prompt:String(d.prompt||''), question:String(d.question||KQ[c.kind]), teach:String(d.teach||''), source:c.source };
@@ -631,9 +663,19 @@ function applyDraft(c,d,drafter){
   c.doubts=(Array.isArray(d.doubts)?d.doubts:[]).map(String).slice(0,8);
   c.drafter=drafter; if(c.status==='draft'||c.status==='keep'||c.status==='fixed'||c.status==='cut') c.status='review';
 }
+function applyTemplate(c){
+  const t=templateDraft(c), mine=c.mine||{}, filled=[]; c.claude=c.claude||{};
+  ['read','teach'].forEach(f=>{ if(!mine[f] && !String(c[f]||'').trim() && t[f]){ c[f]=t[f]; c.claude[f]=t[f]; filled.push(f); } });
+  if(!String(c.question||'').trim()) c.question=KQ[c.kind];
+  if(!c.drafter) c.drafter='template';
+  if(c.drafter==='template'){ const note=t.doubts[0]; c.doubts=(c.doubts||[]).filter(x=>x!==note); c.doubts.unshift(note); }
+  if(c.status==='draft') c.status='review';
+  return filled;
+}
 async function runDraft(c){
   if(!c.take.trim() && !(c.mine&&Object.values(c.mine).some(Boolean))){ $('#dstat').textContent='Write your take first.'; $('#take').focus(); return; }
-  applyDraft(c,templateDraft(c),'template'); saveCase(c,true); renderAll();
+  const filled=applyTemplate(c); saveCase(c,true); renderAll();
+  if($('#dstat')) $('#dstat').textContent = filled.length ? 'Filled the empty '+filled.map(f=>FL[f].toLowerCase()).join(' and ')+' from your take.' : 'Nothing was empty to fill. Your fields are unchanged.';
 }
 
 /* ---------- preview + export ---------- */
@@ -652,7 +694,7 @@ async function renderPreview(){
   for(const kind of KINDS){ const c=k[kind][pvDay];
     if(!c){ cells.push(`<article class="card play empty k-${kind}"><div class="frame ${kind}">${decoSvg(kind)}<span class="cap">No approved ${esc(KL[kind])} yet</span></div><div class="pbody"><div class="eyebrow">${esc(KL[kind])}</div><p>Approve one in Build to fill this slot.</p></div></article>`); continue; }
     const src=await imgGet(c.id);
-    cells.push(`<article class="card play k-${kind}" data-pid="${c.id}">${frameHtml(c,src,false)}<div class="pbody"></div></article>`); }
+    cells.push(`<article class="card play k-${kind}" data-pid="${esc(c.id)}">${frameHtml(c,src,false)}<div class="pbody"></div></article>`); }
   $('#daygrid').innerHTML=cells.join('');
   document.querySelectorAll('.play[data-pid]').forEach(card=>playCard(card, cases[card.dataset.pid]));
 }
@@ -700,7 +742,7 @@ async function renderExport(){
     const it={id:c.id, kind, stem:c.prompt.trim(), question:c.question.trim(), choices:ch, correct:c.correctIndex,
       ai_reads:{ correct:{text:c.aiRight.trim(), pick:c.correctIndex}, wrong:{text:c.aiWrong.trim(), pick:c.aiWrongPick} },
       teach:teachParas(c.teach), src:c.source.trim(),
-      image: src ? (withImg ? src : 'attached in the builder') : null, image_credit:(EX_IMG[c.id]||{}).credit||null,
+      image: src ? (withImg ? src : 'attached in the builder') : null, image_credit:(exImg(c.id)||{}).credit||null,
       prompt:c.prompt.trim()+'\n\n'+c.question.trim(), correctIndex:c.correctIndex, teaching_point:c.teach.trim(), source_note:c.source.trim(), status:'approved', scheduled_date:iso(days[i])};
     if(extra) Object.assign(it,{faculty_read:c.read.trim(), why_not:c.whyNot.map(x=>x.trim())});
     out.push(it); }
@@ -709,16 +751,16 @@ async function renderExport(){
 $('#xImg').addEventListener('change',renderExport);
 $('#xExtra').addEventListener('change',renderExport);
 function download(name,text){ const u=URL.createObjectURL(new Blob([text],{type:'application/json'})); const a=document.createElement('a'); a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),2000); }
-$('#dl').addEventListener('click',()=>{ download('daily-images-cases-'+iso(new Date())+'.json', $('#json').textContent); $('#copied').textContent='Downloaded'; });
-$('#bk').addEventListener('click',async()=>{ const imgs={}; for(const id of Object.keys(cases)){ if(EX_IMG[id]) continue; const s=await imgGet(id); if(s) imgs[id]=s; }
+$('#dl').addEventListener('click',async()=>{ await renderExport(); const t=$('#json').textContent; if(t.startsWith('//')){ $('#copied').textContent='Approve a case first. There is nothing to download yet.'; return; } download('daily-images-cases-'+iso(new Date())+'.json', t); $('#copied').textContent='Downloaded'; });
+$('#bk').addEventListener('click',async()=>{ const imgs={}; for(const id of Object.keys(cases)){ if(exImg(id)) continue; const s=await imgGet(id); if(s) imgs[id]=s; }
   download('case-builder-backup-'+iso(new Date())+'.json', JSON.stringify({app:'teaching-case-builder',v:1,saved:new Date().toISOString(),cases,rules,images:imgs})); $('#bkMsg').textContent='Backup downloaded with '+Object.keys(cases).length+' case'+(Object.keys(cases).length===1?'':'s')+'.'; });
 $('#rs').addEventListener('click',()=>$('#rsFile').click());
 $('#rsFile').addEventListener('change',async e=>{ const f=e.target.files[0]; e.target.value=''; if(!f) return;
   try{ const d=JSON.parse(await f.text()); if(!d||d.app!=='teaching-case-builder'||typeof d.cases!=='object') throw 0;
-    let n=0; for(const [id,c] of Object.entries(d.cases)){ if(c&&c.id===id&&KINDS.includes(c.kind)&&Array.isArray(c.choices)&&Array.isArray(c.whyNot)){ cases[id]=c; n++; } }
-    if(d.images) for(const [id,s] of Object.entries(d.images)){ if(cases[id]&&typeof s==='string'&&s.startsWith('data:image/')) await imgPut(id,s); }
-    if(Array.isArray(d.rules)) d.rules.forEach(r=>{ if(r&&typeof r.text==='string'&&!rules.some(x=>x.text===r.text)) rules.push({id:r.id||uid(),text:r.text.slice(0,200),src:r.src||'you',on:r.on!==false}); });
-    lsave(); $('#bkMsg').textContent='Loaded '+n+' case'+(n===1?'':'s')+'. Cases with the same id were replaced.'; renderAll(); renderExport();
+    let n=0; for(const [id,c] of Object.entries(d.cases)){ const k=cleanCase(id,c); if(k){ cases[id]=k; n++; } }
+    if(d.images&&typeof d.images==='object') for(const [id,s] of Object.entries(d.images)){ if(okId(id)&&Object.hasOwn(cases,id)&&!exImg(id)&&typeof s==='string'&&s.length<8e6&&IMG_RE.test(s)) await imgPut(id,s); }
+    cleanRules(d.rules).forEach(r=>{ if(!rules.some(x=>x.text===r.text)) rules.push(r); });
+    const ok=lsave(); $('#bkMsg').textContent=(ok?'':'This browser is not saving, so these are only open until you close the page. ')+'Loaded '+n+' case'+(n===1?'':'s')+'. Cases with the same id were replaced.'; renderAll(); renderExport();
   }catch(err){ $('#bkMsg').textContent='That file is not a case builder backup.'; } });
 $('#copy').addEventListener('click',async()=>{ try{ await navigator.clipboard.writeText($('#json').textContent); $('#copied').textContent='Copied'; }catch(e){ const r=document.createRange(); r.selectNodeContents($('#json')); const s=getSelection(); s.removeAllRanges(); s.addRange(r); $('#copied').textContent='Copy is blocked here, so the text is selected. Press Ctrl or Cmd + C.'; } });
 
